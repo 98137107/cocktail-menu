@@ -1251,18 +1251,17 @@ let openCategories = new Set(['base-spirit']);
 
 // ==================== WELCOME SCREEN ====================
 function confirmMode() {
-  const selected = document.querySelector('input[name="welcomeMode"]:checked');
-  if (selected) {
-    currentMode = selected.value;
-    // Update mode buttons in header
-    document.querySelectorAll('.mode-btn').forEach(b => {
-      b.classList.toggle('active', b.dataset.mode === currentMode);
-    });
-  }
-  document.getElementById('welcomeOverlay').classList.add('hidden');
-  renderResults();
-  
-  try { localStorage.setItem('cocktail-menu-mode', currentMode); } catch(e) {}
+	const overlay = document.getElementById("welcomeOverlay");
+	const selected = document.querySelector('input[name="welcomeMode"]:checked');
+	if (selected) {
+	  currentMode = selected.value;
+	  document.querySelectorAll(".mode-btn").forEach(b => {
+	    b.classList.toggle("active", b.dataset.mode === currentMode);
+	  });
+	}
+	if (overlay) overlay.classList.add("hidden");
+	try { localStorage.setItem("cocktail-menu-mode", currentMode); } catch(e) {}
+	try { renderResults(); } catch(e) {}
 }
 
 function skipWelcome() {
