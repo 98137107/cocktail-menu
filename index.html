@@ -218,6 +218,138 @@ body::before {
 .theme-toggle .icon-sun { opacity: 0; transform: rotate(-90deg); }
 .theme-toggle .icon-moon { opacity: 1; transform: rotate(0); }
 
+
+/* ============================================================
+   WELCOME OVERLAY
+   ============================================================ */
+.welcome-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+.welcome-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.welcome-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px 18px 20px;
+  max-width: 420px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-card);
+  text-align: center;
+}
+.welcome-handle {
+  width: 32px; height: 3px;
+  background: var(--modal-handle);
+  border-radius: 2px;
+  margin: 0 auto 20px;
+}
+.welcome-title {
+  font-family: var(--font-body);
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: var(--text);
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+.welcome-sub {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-bottom: 18px;
+  line-height: 1.6;
+}
+.welcome-modes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+  text-align: left;
+}
+.welcome-mode {
+  cursor: pointer;
+}
+.welcome-mode input[type="radio"] { display: none; }
+.welcome-mode-card {
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  transition: all 0.25s ease;
+  background: var(--overlay);
+}
+.welcome-mode input:checked + .welcome-mode-card {
+  border-color: var(--accent);
+  background: rgba(var(--accent-rgb, 201,168,76), 0.08);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb, 201,168,76), 0.08);
+}
+.welcome-mode-icon { font-size: 1.4rem; display: inline-block; margin-bottom: 4px; }
+.welcome-mode-name {
+  display: inline-block;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text);
+  margin-left: 6px;
+  vertical-align: super;
+}
+.welcome-mode-badge {
+  display: inline-block;
+  font-size: 0.6rem;
+  font-weight: 700;
+  background: var(--accent);
+  color: var(--bg);
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-left: 6px;
+  vertical-align: super;
+}
+.welcome-mode-desc {
+  font-size: 0.76rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-top: 6px;
+}
+.welcome-mode-example {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-top: 4px;
+  font-style: italic;
+}
+.welcome-confirm {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 24px;
+  background: var(--accent);
+  color: var(--bg);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: all 0.25s ease;
+  margin-bottom: 12px;
+}
+.welcome-confirm:active { transform: scale(0.97); opacity: 0.85; }
+.welcome-skip {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 /* ============================================================
    HEADER
    ============================================================ */
@@ -842,6 +974,52 @@ main {
 </style>
 </head>
 <body>
+<!-- ==================== WELCOME OVERLAY ==================== -->
+<div class="welcome-overlay" id="welcomeOverlay">
+  <div class="welcome-card">
+    <div class="welcome-handle"></div>
+    <h2 class="welcome-title">🍸 选择匹配模式</h2>
+    <p class="welcome-sub">告诉我你想要的筛选方式，<br>然后开始调酒</p>
+
+    <div class="welcome-modes" id="welcomeModes">
+      <label class="welcome-mode" data-mode="core">
+        <input type="radio" name="welcomeMode" value="core" checked>
+        <div class="welcome-mode-card">
+          <span class="welcome-mode-icon">🎯</span>
+          <span class="welcome-mode-name">核心匹配</span>
+          <span class="welcome-mode-badge">推荐</span>
+          <p class="welcome-mode-desc">核心材料齐全即可调制。缺个橙皮、少片薄荷也不影响——灵活实用，新手首选。</p>
+          <p class="welcome-mode-example">例：尼格罗尼需要金酒+甜味美思+金巴利，橙皮缺了也能调</p>
+        </div>
+      </label>
+
+      <label class="welcome-mode" data-mode="strict">
+        <input type="radio" name="welcomeMode" value="strict">
+        <div class="welcome-mode-card">
+          <span class="welcome-mode-icon">🔍</span>
+          <span class="welcome-mode-name">严格匹配</span>
+          <p class="welcome-mode-desc">所有材料必须备齐，缺一不可。适合追求完美的调酒爱好者，确保每一杯都原汁原味。</p>
+          <p class="welcome-mode-example">例：干马天尼必须金酒+干味美思+橄榄/柠檬皮全部到位才算可调</p>
+        </div>
+      </label>
+
+      <label class="welcome-mode" data-mode="loose">
+        <input type="radio" name="welcomeMode" value="loose">
+        <div class="welcome-mode-card">
+          <span class="welcome-mode-icon">🍹</span>
+          <span class="welcome-mode-name">宽松匹配</span>
+          <p class="welcome-mode-desc">有基酒就能调——最大化利用现有酒柜。适合材料不多但想探索更多可能性的场景。</p>
+          <p class="welcome-mode-example">例：有任何一种基酒，所有以它为主的鸡尾酒都会显示出来</p>
+        </div>
+      </label>
+    </div>
+
+    <button class="welcome-confirm" id="welcomeConfirm" onclick="confirmMode()">
+      确认选择，开始调酒 →
+    </button>
+    <p class="welcome-skip" onclick="skipWelcome()">以后再说，先进去看看</p>
+  </div>
+</div>
 
 <!-- ==================== HEADER ==================== -->
 <header>
@@ -1069,6 +1247,43 @@ let inventory = new Set();
 let substitutes = {};
 let openCategories = new Set(['base-spirit']);
 
+
+
+// ==================== WELCOME SCREEN ====================
+function confirmMode() {
+  const selected = document.querySelector('input[name="welcomeMode"]:checked');
+  if (selected) {
+    currentMode = selected.value;
+    // Update mode buttons in header
+    document.querySelectorAll('.mode-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.mode === currentMode);
+    });
+  }
+  document.getElementById('welcomeOverlay').classList.add('hidden');
+  renderResults();
+  try { localStorage.setItem('cocktail-menu-welcome', 'seen'); } catch(e) {}
+  try { localStorage.setItem('cocktail-menu-mode', currentMode); } catch(e) {}
+}
+
+function skipWelcome() {
+  document.getElementById('welcomeOverlay').classList.add('hidden');
+  try { localStorage.setItem('cocktail-menu-welcome', 'seen'); } catch(e) {}
+}
+
+// Check if user has seen welcome before
+(function() {
+  const seen = localStorage.getItem('cocktail-menu-welcome');
+  const savedMode = localStorage.getItem('cocktail-menu-mode');
+  if (savedMode) {
+    currentMode = savedMode;
+    document.querySelectorAll('.mode-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.mode === currentMode);
+    });
+  }
+  if (seen === 'seen') {
+    document.getElementById('welcomeOverlay').classList.add('hidden');
+  }
+})();
 
 // ==================== THEME TOGGLE ====================
 function toggleTheme() {
