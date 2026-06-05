@@ -1261,18 +1261,16 @@ function confirmMode() {
   }
   document.getElementById('welcomeOverlay').classList.add('hidden');
   renderResults();
-  try { localStorage.setItem('cocktail-menu-welcome', 'seen'); } catch(e) {}
+  
   try { localStorage.setItem('cocktail-menu-mode', currentMode); } catch(e) {}
 }
 
 function skipWelcome() {
   document.getElementById('welcomeOverlay').classList.add('hidden');
-  try { localStorage.setItem('cocktail-menu-welcome', 'seen'); } catch(e) {}
 }
 
 // Check if user has seen welcome before
 (function() {
-  const seen = localStorage.getItem('cocktail-menu-welcome');
   const savedMode = localStorage.getItem('cocktail-menu-mode');
   if (savedMode) {
     currentMode = savedMode;
@@ -1280,10 +1278,6 @@ function skipWelcome() {
       b.classList.toggle('active', b.dataset.mode === currentMode);
     });
   }
-  if (seen === 'seen') {
-    document.getElementById('welcomeOverlay').classList.add('hidden');
-  }
-})();
 
 // ==================== THEME TOGGLE ====================
 function toggleTheme() {
