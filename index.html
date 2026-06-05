@@ -1121,7 +1121,7 @@ function searchMaterials(query) {
       cat.classList.add('open');
     } else if (!q) {
       // On clear, restore DOM to match openCategories
-      const catId = cat.querySelector('.cat-header')?.dataset.cat;
+      const catId = (cat.querySelector('.cat-header') || {}).dataset.cat;
       cat.classList.toggle('open', openCategories.has(catId));
     }
     cat.classList.toggle('no-match', q && visible === 0);
@@ -1243,7 +1243,7 @@ function renderCategories() {
     btn.addEventListener('click', e => { e.stopPropagation(); toggleSubPopup(btn.dataset.material); });
   });
   // Re-apply search if active
-  const sq = document.getElementById("materialSearch")?.value;
+  const sq = (document.getElementById("materialSearch") || {}).value;
   if (sq && sq.trim()) searchMaterials(sq);
 }
 
@@ -1332,7 +1332,7 @@ function renderResults() {
       return `<div class="cocktail-card" data-cocktail-id="${r.c.id}" onclick="openDetail('${r.c.id}')" style="opacity:0.55;">
         <div class="card-img-wrap"><div class="card-img-placeholder">📋</div></div>
         <div class="card-body"><div class="card-name">${r.c.name}</div>
-          <div style="font-size:0.68rem;color:var(--accent-dim);margin-top:2px;">缺：${missing.map(i=>ALL_MATERIALS.find(m=>m.id===i.material)?.name||i.material).join(' · ')}</div>
+          <div style="font-size:0.68rem;color:var(--accent-dim);margin-top:2px;">缺：${missing.map(i=>(ALL_MATERIALS.find(m=>m.id===i.material) || {}).name||i.material).join(' · ')}</div>
         </div></div>`;
     }).join('');
   } else { as.style.display='none'; }
@@ -1344,7 +1344,7 @@ function renderResults() {
 
 function cardHTML(c) {
   const diff = {1:'⭐ 简单',2:'⭐⭐ 中等',3:'⭐⭐⭐ 进阶'};
-  const ings = c.ingredients.map(i => (ALL_MATERIALS.find(m=>m.id===i.material)?.name||i.material).split(' ')[0]).join(' · ');
+  const ings = c.ingredients.map(i => ((ALL_MATERIALS.find(m=>m.id===i.material) || {}).name||i.material).split(' ')[0]).join(' · ');
   return `<div class="cocktail-card" data-cocktail-id="${c.id}">
     <div class="card-img-wrap">
       <img class="card-img" src="${c.image}" alt="${c.name}" loading="lazy" onerror="this.style.display='none';this.parentElement.querySelector('.card-img-placeholder').style.display='flex';">
