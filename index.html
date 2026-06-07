@@ -1334,7 +1334,7 @@ function confirmMode() {
 function skipWelcome() {
   const video = document.getElementById("welcomeVideo");
   if (video) { video.pause(); video.currentTime = video.duration || 0; }
-  document.getElementById("welcomeOverlay").classList.add("hidden");
+  showModeSelection();
 }
 
 // Always show welcome on page load
