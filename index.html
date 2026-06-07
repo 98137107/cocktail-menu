@@ -290,6 +290,15 @@ body::before {
   z-index: 1010;
 }
 .welcome-skip:active { background: rgba(255,255,255,0.1); color: #fff; }
+.welcome-video-phase, .welcome-mode-phase {
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; width: 100%; height: 100%;
+}
+.hidden-mode { display: none !important; }
+.welcome-skip-card {
+  font-size: 0.72rem; color: var(--text-muted); cursor: pointer;
+  text-decoration: underline; text-underline-offset: 3px; margin-top: 8px;
+}
 .welcome-card {
   background: var(--bg-secondary);
   border: 1px solid var(--border);
@@ -1030,9 +1039,49 @@ main {
 <svg style="position:absolute;width:0;height:0" aria-hidden="true"><filter id="handSketch" x="-2%" y="-2%" width="104%" height="104%"><feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="2" result="noise" seed="3"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="1.2" xChannelSelector="R" yChannelSelector="G"/></filter></svg>
 <!-- ==================== WELCOME OVERLAY ==================== -->
 <div class="welcome-overlay" id="welcomeOverlay">
-  <video id="welcomeVideo" class="welcome-video" src="welcome.mp4" playsinline autoplay muted
-         onended="onVideoEnd()" onerror="skipWelcome()"></video>
-  <p class="welcome-skip" onclick="skipWelcome()">跳过 →</p>
+  <!-- Video phase -->
+  <div class="welcome-video-phase" id="welcomeVideoPhase">
+    <video id="welcomeVideo" class="welcome-video" src="welcome.mp4" playsinline autoplay muted
+           onended="showModeSelection()" onerror="skipWelcome()"></video>
+    <p class="welcome-skip" onclick="skipWelcome()">跳过 →</p>
+  </div>
+  <!-- Mode selection phase (hidden initially) -->
+  <div class="welcome-mode-phase hidden-mode" id="welcomeModePhase">
+    <div class="welcome-card">
+      <div class="welcome-handle"></div>
+      <h2 class="welcome-title">🍸 选择匹配模式</h2>
+      <p class="welcome-sub">告诉我你想要的筛选方式，<br>然后开始调酒</p>
+      <div class="welcome-modes" id="welcomeModes">
+        <label class="welcome-mode" data-mode="core">
+          <input type="radio" name="welcomeMode" value="core" checked>
+          <div class="welcome-mode-card">
+            <span class="welcome-mode-icon">🎯</span>
+            <span class="welcome-mode-name">核心匹配</span>
+            <span class="welcome-mode-badge">推荐</span>
+            <p class="welcome-mode-desc">核心材料齐全即可调制。灵活实用，新手首选。</p>
+          </div>
+        </label>
+        <label class="welcome-mode" data-mode="strict">
+          <input type="radio" name="welcomeMode" value="strict">
+          <div class="welcome-mode-card">
+            <span class="welcome-mode-icon">🔍</span>
+            <span class="welcome-mode-name">严格匹配</span>
+            <p class="welcome-mode-desc">所有材料必须备齐，缺一不可。适合追求完美。</p>
+          </div>
+        </label>
+        <label class="welcome-mode" data-mode="loose">
+          <input type="radio" name="welcomeMode" value="loose">
+          <div class="welcome-mode-card">
+            <span class="welcome-mode-icon">🍹</span>
+            <span class="welcome-mode-name">宽松匹配</span>
+            <p class="welcome-mode-desc">有基酒就能调，最大化利用现有酒柜。</p>
+          </div>
+        </label>
+      </div>
+      <button class="welcome-confirm" id="welcomeConfirm" onclick="confirmMode()">确认选择，开始调酒 →</button>
+      <p class="welcome-skip-card" onclick="skipWelcome()">先进去看看</p>
+    </div>
+  </div>
 </div>
 
 <!-- ==================== HEADER ==================== -->
@@ -1264,21 +1313,35 @@ let openCategories = new Set(['base-spirit']);
 
 
 // ==================== WELCOME SCREEN ====================
-function onVideoEnd() {
-  const overlay = document.getElementById("welcomeOverlay");
-  if (overlay) overlay.classList.add("hidden");
-  try { localStorage.setItem("cocktail-menu-welcome", "seen"); } catch(e) {}
+function showModeSelection() {
+  document.getElementById("welcomeVideoPhase").classList.add("hidden-mode");
+  document.getElementById("welcomeModePhase").classList.remove("hidden-mode");
+}
+
+function confirmMode() {
+  const selected = document.querySelector('input[name="welcomeMode"]:checked');
+  if (selected) {
+    currentMode = selected.value;
+    document.querySelectorAll(".mode-btn").forEach(b => {
+      b.classList.toggle("active", b.dataset.mode === currentMode);
+    });
+  }
+  document.getElementById("welcomeOverlay").classList.add("hidden");
+  try { localStorage.setItem("cocktail-menu-mode", currentMode); } catch(e) {}
+  try { renderResults(); } catch(e) {}
 }
 
 function skipWelcome() {
   const video = document.getElementById("welcomeVideo");
   if (video) { video.pause(); video.currentTime = video.duration || 0; }
-  onVideoEnd();
+  document.getElementById("welcomeOverlay").classList.add("hidden");
 }
 
 // Always show welcome on page load
 (function() {
   document.getElementById("welcomeOverlay").classList.remove("hidden");
+  document.getElementById("welcomeVideoPhase").classList.remove("hidden-mode");
+  document.getElementById("welcomeModePhase").classList.add("hidden-mode");
 })();
 
 // ==================== THEME TOGGLE ====================
