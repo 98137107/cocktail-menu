@@ -487,6 +487,18 @@ header h1 {
 .mode-btn .mode-key { display: block; font-size: 0.6rem; opacity: 0.5; margin-top: 1px; }
 .mode-btn.active .mode-key { opacity: 0.7; }
 
+/* Mode collapse toggle */
+.mode-collapse-btn {
+  display: block; margin: 4px auto 0;
+  width: 28px; height: 18px; border: none; border-radius: 9px;
+  background: var(--overlay-strong); color: var(--text-muted);
+  font-size: 0.6rem; cursor: pointer; line-height: 1;
+  transition: all 0.3s ease;
+}
+.mode-collapse-btn:active { background: var(--border); }
+.mode-selector.collapsed { max-height: 0; overflow: hidden; opacity: 0; margin: 0; padding: 0; transition: all 0.4s ease; }
+.mode-collapse-btn.collapsed { transform: rotate(180deg); }
+
 /* ============================================================
    MAIN
    ============================================================ */
@@ -1180,6 +1192,7 @@ main {
       宽松匹配<span class="mode-key">有基酒行</span>
     </button>
   </div>
+  <button class="mode-collapse-btn" id="modeCollapseBtn" onclick="toggleModeSelector()" title="收起模式选择">▾</button>
 </header>
 
 <!-- ==================== MAIN ==================== -->
@@ -1433,6 +1446,14 @@ function skipWelcome() {
   document.getElementById("welcomeVideoPhase").classList.remove("hidden-mode");
   document.getElementById("welcomeModePhase").classList.add("hidden-mode");
 })();
+
+// ==================== MODE COLLAPSE ====================
+function toggleModeSelector() {
+  const selector = document.getElementById('modeSelector');
+  const btn = document.getElementById('modeCollapseBtn');
+  selector.classList.toggle('collapsed');
+  btn.classList.toggle('collapsed');
+}
 
 // ==================== THEME TOGGLE ====================
 function toggleTheme() {
