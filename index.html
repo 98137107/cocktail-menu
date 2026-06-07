@@ -1023,6 +1023,7 @@ main {
     gap: 28px;
     padding-top: 24px;
   }
+  #resultsPanel { display: block; }
   .material-panel {
     position: sticky; top: 130px;
     align-self: start;
@@ -1052,9 +1053,12 @@ main {
   cursor: not-allowed; font-weight: 400; letter-spacing: 0;
 }
 
+/* Mobile: hide real-time results, use overlay instead */
+#resultsPanel { display: none; }
+
 /* Results overlay */
 .results-overlay {
-  position: fixed; inset: 0; z-index: 500;
+  position: fixed; inset: 0; z-index: 999;
   background: var(--bg);
   display: flex; flex-direction: column;
   transform: translateY(100%);
