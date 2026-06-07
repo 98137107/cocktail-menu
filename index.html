@@ -1079,9 +1079,7 @@ main {
 .results-overlay.show { transform: translateY(0); }
 .results-overlay-grid {
   flex: 1; overflow-y: auto; padding: 14px; padding-bottom: 80px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 10px;
+  display: flex; flex-direction: column; gap: 8px;
 }
 .results-overlay-bar {
   position: sticky; bottom: 0; z-index: 9999;
@@ -1103,24 +1101,13 @@ main {
   font-weight: 700;
 }
 .results-overlay-grid .cocktail-card {
-  flex-direction: column; align-items: center; text-align: center;
-  padding: 14px 10px; gap: 8px;
   animation: popUp 0.4s ease-out backwards;
 }
 @keyframes popUp {
-  from { opacity: 0; transform: translateY(30px) scale(0.9); }
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
-.results-overlay-grid .card-img-wrap { width: 72px; height: 72px; }
-.results-overlay-grid .card-name { font-size: 0.8rem; text-align: center; }
-.results-overlay-grid .card-en { font-size: 0.65rem; text-align: center; }
-.results-overlay-grid .card-ingredients { font-size: 0.64rem; text-align: center; white-space: normal; }
-.results-overlay-grid .card-meta { justify-content: center; }
 
-@media (min-width: 768px) {
-  .results-overlay-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
-  .results-overlay-grid .card-img-wrap { width: 88px; height: 88px; }
-}
 </style>
 </head>
 <body>
