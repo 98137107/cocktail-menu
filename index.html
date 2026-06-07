@@ -1067,17 +1067,18 @@ main {
 }
 .results-overlay.show { transform: translateY(0); }
 .results-overlay-bar {
-  position: sticky; top: 0; z-index: 10;
-  display: flex; align-items: center; gap: 12px;
-  padding: 12px 16px;
+  position: sticky; top: 0; z-index: 9999;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 14px 16px;
   background: var(--bg-secondary);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 2px solid var(--accent);
+  min-height: 50px;
 }
 .back-to-materials {
-  padding: 6px 14px; border: 1px solid var(--border); border-radius: 18px;
-  background: transparent; color: var(--text);
-  font-family: var(--font-body); font-size: 0.78rem; cursor: pointer;
-  white-space: nowrap;
+  padding: 8px 18px; border: 2px solid var(--accent); border-radius: 20px;
+  background: var(--bg); color: var(--accent);
+  font-family: var(--font-body); font-size: 0.82rem; font-weight: 700; cursor: pointer;
+  white-space: nowrap; letter-spacing: 1px;
 }
 .results-overlay-count {
   font-family: var(--font-display); font-size: 0.9rem; color: var(--accent);
@@ -1087,6 +1088,7 @@ main {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 10px; padding: 14px;
+  padding-top: 8px;
 }
 .results-overlay-grid .cocktail-card {
   flex-direction: column; align-items: center; text-align: center;
